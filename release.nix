@@ -6,6 +6,13 @@ let
   run-tresorit-install-script = writeShellScriptBin "install-tresorit-impure" ''
     mkdir -p $HOME/.local/share/tresorit
     cp -rf ${pure}/bin/* $HOME/.local/share/tresorit/
+    chmod +w $HOME/.local/share/tresorit/tresorit.desktop
+    cat >> $HOME/.local/share/tresorit/tresorit.desktop << EOF
+    Exec=$HOME/.local/share/tresorit/tresorit %u
+    MimeType=x-scheme-handler/tresorit
+    Icon=$HOME/.local/share/tresorit/tresorit.png
+    EOF
+    ln -s $HOME/.local/share/tresorit/tresorit.desktop $HOME/.local/share/applications/tresorit.desktop
   '';
   run-tresorit-script = writeShellScriptBin "tresorit-impure" ''
     BIN=$HOME/.local/share/tresorit/tresorit
