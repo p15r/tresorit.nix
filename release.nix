@@ -4,11 +4,18 @@ let
   installUsage = "You must first run install-tresorit-impure before using this command.";
   pure = import ./default.nix {};
   run-tresorit-install-script = writeShellScriptBin "install-tresorit-impure" ''
-    mkdir -p $HOME/.local/tresorit
-    cp -rf ${pure}/bin/* $HOME/.local/tresorit/
+    mkdir -p $HOME/.local/share/tresorit
+    cp -rf ${pure}/bin/* $HOME/.local/share/tresorit/
+    chmod +w $HOME/.local/share/tresorit/tresorit.desktop
+    cat >> $HOME/.local/share/tresorit/tresorit.desktop << EOF
+    Exec=$HOME/.local/share/tresorit/tresorit %u
+    MimeType=x-scheme-handler/tresorit
+    Icon=$HOME/.local/share/tresorit/tresorit.png
+    EOF
+    ln -s $HOME/.local/share/tresorit/tresorit.desktop $HOME/.local/share/applications/tresorit.desktop
   '';
   run-tresorit-script = writeShellScriptBin "tresorit-impure" ''
-    BIN=$HOME/.local/tresorit/tresorit
+    BIN=$HOME/.local/share/tresorit/tresorit
     if [ -f $BIN ]; then
       $BIN "$@"
     else
@@ -16,7 +23,7 @@ let
     fi
   '';
   run-tresorit-cli-script = writeShellScriptBin "tresorit-cli-impure" ''
-    BIN=$HOME/.local/tresorit/tresorit-cli
+    BIN=$HOME/.local/share/tresorit/tresorit-cli
     if [ -f $BIN ]; then
       $BIN "$@"
     else
